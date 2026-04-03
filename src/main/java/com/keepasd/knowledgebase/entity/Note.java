@@ -2,32 +2,20 @@ package com.keepasd.knowledgebase.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Data
-@TableName("user")
-public class User {
-
+@TableName("note")
+public class Note {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    private String username;
-
-
-    private String password;
-
-
-    private String email;
-
-
+    private Long userId;
+    private Long categoryId;
+    private String title;
+    private String content;
     private LocalDateTime createTime;
-
-    @TableLogic
-    private Integer deleted;
-
-    private LocalDateTime updatedAt;
+    private LocalDateTime updateTime;
 }
