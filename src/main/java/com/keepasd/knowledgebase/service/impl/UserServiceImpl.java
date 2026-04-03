@@ -33,4 +33,11 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         return userMapper.insert(user) > 0;
     }
+
+    @Override
+    public User getByUsername(String username) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUsername, username);
+        return userMapper.selectOne(wrapper);
+    }
 }
