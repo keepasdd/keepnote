@@ -18,4 +18,5 @@ public class Note {
     private String content;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private Integer isFavorite;
 }

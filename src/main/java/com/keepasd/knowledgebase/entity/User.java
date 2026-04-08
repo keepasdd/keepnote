@@ -23,6 +23,9 @@ public class User {
 
     private String email;
 
+    private String nickname;
+
+    private String avatar;
 
     private LocalDateTime createTime;
 

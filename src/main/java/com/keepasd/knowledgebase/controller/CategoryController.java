@@ -46,6 +46,7 @@ public class CategoryController {
     //删除分类
     @DeleteMapping("/{id}")
     public Result deleteCategory(@PathVariable Long id){
+        log.info("用户删除分类");
         categoryService.deleteCategoryById(id);
         return Result.success();
     }

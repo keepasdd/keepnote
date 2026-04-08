@@ -9,5 +9,5 @@ public class NoteCreateDTO {
     private String title;
     private String content;
     private Long categoryId;
-    private List<Integer> tagsIds;
+    private List<Integer> tagIds;
 }

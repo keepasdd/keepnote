@@ -1,6 +1,9 @@
 package com.keepasd.knowledgebase.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.keepasd.knowledgebase.dto.request.UpdateUserDTO;
 import com.keepasd.knowledgebase.entity.User;
 import com.keepasd.knowledgebase.mapper.UserMapper;
 import com.keepasd.knowledgebase.service.UserService;
@@ -39,5 +42,20 @@ public class UserServiceImpl implements UserService {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, username);
         return userMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public User getUserInfo(Long userId) {
+        return userMapper.selectById(userId);
+    }
+
+    @Override
+    public void updateUser(Long userId, UpdateUserDTO dto) {
+        LambdaUpdateWrapper<User> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(User::getId, userId);
+        if (dto.getNickname() != null) wrapper.set(User::getNickname, dto.getNickname());
+        if (dto.getEmail() != null) wrapper.set(User::getEmail, dto.getEmail());
+        if (dto.getAvatar() != null) wrapper.set(User::getAvatar, dto.getAvatar());
+        userMapper.update(null, wrapper);
     }
 }

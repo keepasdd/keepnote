@@ -22,3 +22,10 @@ server:
 
 jwt:
   secret: knowledge-base-secret-key-must-be-at-least-32-bytes
+
+tencent:
+  cos:
+    secret-id: AKIDHSp0xhEXdWwFVbFya0DJC8xa5SfiZEgy
+    secret-key: KR6pNiroa8UdaKsFQM6dyTwBRYTFIPRI
+    region: ap-chengdu
+    bucket: keep-noteuserinfo-1409092538

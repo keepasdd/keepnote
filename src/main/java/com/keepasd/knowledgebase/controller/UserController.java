@@ -1,9 +1,11 @@
 package com.keepasd.knowledgebase.controller;
 
 import com.keepasd.knowledgebase.common.Result;
+import com.keepasd.knowledgebase.dto.request.UpdateUserDTO;
 import com.keepasd.knowledgebase.entity.User;
 import com.keepasd.knowledgebase.service.UserService;
 import com.keepasd.knowledgebase.util.JwtUtil;
+import com.keepasd.knowledgebase.util.UserContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +52,18 @@ public class UserController {
         }
         log.info("用户注册失败，username={} 已存在", params.get("username"));
         return Result.fail("用户名已存在");
+    }
 
+    @GetMapping("/info")
+    public Result<User> getUserInfo() {
+        User user = userService.getUserInfo(UserContext.getUserId());
+        user.setPassword(null);
+        return Result.success(user);
+    }
+
+    @PutMapping("/update")
+    public Result<Void> updateUser(@RequestBody UpdateUserDTO dto) {
+        userService.updateUser(UserContext.getUserId(), dto);
+        return Result.success();
     }
 }

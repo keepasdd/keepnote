@@ -1,6 +1,5 @@
 package com.keepasd.knowledgebase.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.keepasd.knowledgebase.dto.request.AddCategoryDTO;
 import com.keepasd.knowledgebase.dto.request.UpdateCategoryDTO;
 import com.keepasd.knowledgebase.entity.Category;
@@ -17,14 +16,13 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
+
     @Autowired
     private CategoryMapper categoryMapper;
 
     @Override
     public List<Category> getMyCategoryList() {
-        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Category::getUserId, UserContext.getUserId());
-        return categoryMapper.selectList(wrapper);
+        return categoryMapper.selectWithNoteCount(UserContext.getUserId());
     }
 
     @Override

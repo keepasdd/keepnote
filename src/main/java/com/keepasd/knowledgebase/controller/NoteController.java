@@ -1,6 +1,7 @@
 package com.keepasd.knowledgebase.controller;
 
 import com.keepasd.knowledgebase.common.Result;
+import com.keepasd.knowledgebase.dto.request.NoteCreateDTO;
 import com.keepasd.knowledgebase.dto.request.NoteQueryDTO;
 import com.keepasd.knowledgebase.dto.request.UpdateNoteDTO;
 import com.keepasd.knowledgebase.entity.Note;
@@ -23,10 +24,10 @@ public class NoteController {
     private UserService userService;
 
     @PostMapping("/add")
-    public Result add(@RequestBody Note note) {
-        note.setUserId(UserContext.getUserId());
-        log.info("新增笔记，userId={}, title={}", note.getUserId(), note.getTitle());
-        return noteService.addNote(note) ? Result.success() : Result.fail("添加失败");
+    public Result add(@RequestBody NoteCreateDTO noteCreateDTO) {
+        log.info("新增笔记，userId={}, dto={}", UserContext.getUserId(), noteCreateDTO);
+        noteService.addNote(noteCreateDTO);
+        return Result.success();
     }
 
     @GetMapping("/list")

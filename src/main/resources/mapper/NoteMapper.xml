@@ -6,6 +6,7 @@
     <select id="pageQuery" resultType="com.keepasd.knowledgebase.entity.Note">
         SELECT * FROM note
         <where>
+            AND user_id = #{userId}
             <if test="keyword != null and keyword != ''">
                 AND (title LIKE CONCAT('%', #{keyword}, '%')
                 OR content LIKE CONCAT('%', #{keyword}, '%'))
@@ -13,11 +14,37 @@
             <if test="categoryId != null">
                 AND category_id = #{categoryId}
             </if>
+            <if test="tagId != null">
+                AND EXISTS (SELECT 1 FROM note_tag nt WHERE nt.note_id = note.id AND nt.tag_id = #{tagId})
+            </if>
+            <if test="isFavorite != null">
+                AND is_favorite = #{isFavorite}
+            </if>
+            <if test="dateRange != null and dateRange != ''">
+                <choose>
+                    <when test="dateRange == 'today'">
+                        AND create_time >= CURDATE()
+                    </when>
+                    <when test="dateRange == 'week'">
+                        AND create_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    </when>
+                    <when test="dateRange == 'month'">
+                        AND create_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+                    </when>
+                </choose>
+            </if>
         </where>
         ORDER BY create_time DESC
     </select>
     <select id="getById" resultType="com.keepasd.knowledgebase.entity.Note">
         select * from note where id = #{id};
     </select>
+
+    <insert id="insertNoteTags">
+        INSERT INTO note_tag (note_id, tag_id) VALUES
+        <foreach collection="tagIds" item="tagId" separator=",">
+            (#{noteId}, #{tagId})
+        </foreach>
+    </insert>
 
 </mapper>
