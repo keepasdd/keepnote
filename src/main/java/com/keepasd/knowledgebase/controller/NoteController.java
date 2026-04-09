@@ -4,10 +4,16 @@ import com.keepasd.knowledgebase.common.Result;
 import com.keepasd.knowledgebase.dto.request.NoteCreateDTO;
 import com.keepasd.knowledgebase.dto.request.NoteQueryDTO;
 import com.keepasd.knowledgebase.dto.request.UpdateNoteDTO;
+import com.keepasd.knowledgebase.dto.response.NoteDetailVO;
 import com.keepasd.knowledgebase.entity.Note;
+import com.keepasd.knowledgebase.entity.NoteAttachment;
+import com.keepasd.knowledgebase.service.NoteAttachmentService;
 import com.keepasd.knowledgebase.service.NoteService;
 import com.keepasd.knowledgebase.service.UserService;
 import com.keepasd.knowledgebase.util.UserContext;
+import org.springframework.beans.BeanUtils;
+
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +29,9 @@ public class NoteController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private NoteAttachmentService noteAttachmentService;
+
     @PostMapping("/add")
     public Result add(@RequestBody NoteCreateDTO noteCreateDTO) {
         log.info("新增笔记，userId={}, dto={}", UserContext.getUserId(), noteCreateDTO);
@@ -37,10 +46,13 @@ public class NoteController {
     }
 
     @GetMapping("/{id}")
-    public Result getById(@PathVariable Long id) {
+    public Result<NoteDetailVO> getById(@PathVariable Long id) {
         log.info("查询笔记详情，id={}", id);
         Note note = noteService.getbyId(id);
-        return Result.success(note);
+        NoteDetailVO vo = new NoteDetailVO();
+        BeanUtils.copyProperties(note, vo);
+        vo.setAttachments(noteAttachmentService.listByNoteId(id));
+        return Result.success(vo);
     }
 
     @PutMapping("/update")

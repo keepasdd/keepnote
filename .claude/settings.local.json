@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mysql:*)",
+      "Bash(xargs grep:*)",
+      "Bash(grep:*)",
+      "Bash(head -144 \"C:/Users/a/Desktop/My_Project/keepnote-vue/src/components/NoteDetail.vue\")",
+      "Bash(tail -n +378 \"C:/Users/a/Desktop/My_Project/keepnote-vue/src/components/NoteDetail.vue\")",
+      "Read(//tmp/**)"
+    ]
+  }
+}

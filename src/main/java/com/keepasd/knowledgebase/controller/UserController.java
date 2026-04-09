@@ -38,9 +38,32 @@ public class UserController {
         return Result.fail("用户名或密码错误");
     }
 
+    /**
+     * 密码校验规则：
+     * 1. 长度 6-30 位
+     * 2. 只允许字母和数字
+     * 3. 必须包含大写字母、小写字母、数字中的至少两种
+     */
+    private static final java.util.regex.Pattern PASSWORD_BASE  = java.util.regex.Pattern.compile("^[A-Za-z\\d]{6,30}$");
+    private static final java.util.regex.Pattern HAS_LOWER      = java.util.regex.Pattern.compile("[a-z]");
+    private static final java.util.regex.Pattern HAS_UPPER      = java.util.regex.Pattern.compile("[A-Z]");
+    private static final java.util.regex.Pattern HAS_DIGIT      = java.util.regex.Pattern.compile("\\d");
+
+    private boolean isValidPassword(String pwd) {
+        if (pwd == null || !PASSWORD_BASE.matcher(pwd).matches()) return false;
+        int kinds = (HAS_LOWER.matcher(pwd).find() ? 1 : 0)
+                  + (HAS_UPPER.matcher(pwd).find() ? 1 : 0)
+                  + (HAS_DIGIT.matcher(pwd).find() ? 1 : 0);
+        return kinds >= 2;
+    }
+
     @PostMapping("/register")
     public Result<String> register(@RequestBody Map<String, String> params) {
         log.info("用户注册请求，username={}", params.get("username"));
+        String password = params.get("password");
+        if (!isValidPassword(password)) {
+            return Result.fail("密码必须为6-30位字母数字组合，且包含大写字母、小写字母、数字中的至少两种");
+        }
         boolean success = userService.register(
             params.get("username"),
             params.get("password"),
