@@ -1,4 +1,10 @@
 spring:
+  data:
+    redis:
+      database: 0
+      host: localhost
+      port: 6379
+
   application:
     name: knowledge-base
   datasource:
@@ -7,10 +13,6 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  data:
-    redis:
-      host: localhost
-      port: 6379
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml

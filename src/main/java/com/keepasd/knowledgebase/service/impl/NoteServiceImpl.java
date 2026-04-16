@@ -10,7 +10,10 @@ import com.keepasd.knowledgebase.dto.request.UpdateNoteDTO;
 import com.keepasd.knowledgebase.entity.Note;
 import com.keepasd.knowledgebase.mapper.NoteMapper;
 import com.keepasd.knowledgebase.service.NoteService;
+import com.keepasd.knowledgebase.util.RedisConstant;
+import com.keepasd.knowledgebase.util.RedisUtil;
 import com.keepasd.knowledgebase.util.UserContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements NoteService {
 
     @Autowired
     private NoteMapper noteMapper;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     @Transactional
@@ -38,15 +45,35 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
         if (!CollectionUtils.isEmpty(noteCreateDTO.getTagIds())) {
             noteMapper.insertNoteTags(note.getId(), noteCreateDTO.getTagIds());
         }
+        redisUtil.deleteByPattern(RedisConstant.NOTE_LIST_KEY + UserContext.getUserId() + ":*");
     }
 
     @Override
     public PageResult pageQuery(NoteQueryDTO noteQueryDTO) {
-        System.out.println("查询参数：" + noteQueryDTO); // 加这一行
+        log.info("查询笔记列表，userId=" + UserContext.getUserId() + ", params=" + noteQueryDTO);
         noteQueryDTO.setUserId(UserContext.getUserId());
+        //先在redis中查询笔记列表，如果存在则直接返回，否则从数据库中查询并将结果存入redis
+        // Key 包含所有查询参数，避免不同条件命中同一份缓存
+        String key = RedisConstant.NOTE_LIST_KEY + UserContext.getUserId()
+                + ":" + noteQueryDTO.getPage()
+                + ":" + noteQueryDTO.getPageSize()
+                + ":" + noteQueryDTO.getKeyword()
+                + ":" + noteQueryDTO.getCategoryId()
+                + ":" + noteQueryDTO.getTagId()
+                + ":" + noteQueryDTO.getIsFavorite()
+                + ":" + noteQueryDTO.getDateRange();
+        PageResult object = redisUtil.getObject(key, PageResult.class);
+        if (object != null) {
+            log.info("从缓存获取笔记列表成功，key={}", key);
+            return object;
+        }
+        // redis中不存在，查询数据库
         PageHelper.startPage(noteQueryDTO.getPage(), noteQueryDTO.getPageSize());
         Page<Note> page = noteMapper.pageQuery(noteQueryDTO);
-        return new PageResult(page.getTotal(), page.getResult());
+        PageResult pageResult = new PageResult(page.getTotal(), page.getResult());
+        // 将结果存入redis，设置过期时间为10分钟
+        redisUtil.setObject(key, pageResult, RedisConstant.NOTE_LIST_TTL, TimeUnit.SECONDS);
+        return pageResult;
     }
 
     @Override
@@ -70,5 +97,6 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
         if (!CollectionUtils.isEmpty(updateNoteDTO.getTagsIds())) {
             noteMapper.insertNoteTags(updateNoteDTO.getId(), updateNoteDTO.getTagsIds());
         }
+        redisUtil.deleteByPattern(RedisConstant.NOTE_LIST_KEY + UserContext.getUserId() + ":*");
     }
 }

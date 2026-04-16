@@ -6,7 +6,24 @@
       "Bash(grep:*)",
       "Bash(head -144 \"C:/Users/a/Desktop/My_Project/keepnote-vue/src/components/NoteDetail.vue\")",
       "Bash(tail -n +378 \"C:/Users/a/Desktop/My_Project/keepnote-vue/src/components/NoteDetail.vue\")",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(find /d/javaproject/knowledge-base -name \"pom.xml\" -exec cat {} \\\\;)",
+      "Bash(unzip -l \"C:/Users/a/Desktop/My_Project/files.zip\")",
+      "Bash(ls -lh /tmp/*.txt)",
+      "Bash(unzip -q files.zip)",
+      "Bash(unzip -l /c/Users/a/Desktop/My_Project/files.zip)",
+      "Bash(netstat -ano)",
+      "Bash(tasklist)",
+      "Bash(wmic process:*)",
+      "Bash(wc -l src/components/*.vue src/api/*.js src/views/*.vue src/stores/*.js)",
+      "Bash(cp /tmp/ANALYSIS.md \"C:\\\\Users\\\\a\\\\Desktop\\\\KEEPNOTE_PROJECT_ANALYSIS.md\")",
+      "Read(//c/Users/a/Desktop/**)",
+      "Bash(ls -la \"D:\\\\\\\\javaproject\\\\\\\\knowledge-base\")",
+      "Bash(copy *)",
+      "Read(//mnt/**)",
+      "Bash(ls /mnt/)",
+      "Bash(find /mnt -maxdepth 3 -name \"*.png\")",
+      "Read(//d/edge浏览器/**)"
     ]
   }
 }

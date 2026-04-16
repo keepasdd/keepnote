@@ -3,6 +3,7 @@ package com.keepasd.knowledgebase.Interceptor;
 import com.keepasd.knowledgebase.entity.User;
 import com.keepasd.knowledgebase.service.UserService;
 import com.keepasd.knowledgebase.util.JwtUtil;
+import com.keepasd.knowledgebase.util.RedisUtil;
 import com.keepasd.knowledgebase.util.UserContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,8 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class LoginInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private UserService userService;
-
+    private RedisUtil redisUtil;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("Authorization");
@@ -23,8 +23,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.setStatus(401);
             return false;
         }
-        String username = JwtUtil.getUsernameFromToken(token.replace("Bearer ", ""));
-        User user = userService.getByUsername(username);
+        String realTokne = token.replace("Bearer ", "");
+        String key = "user:token:"+realTokne;
+        User user = redisUtil.getObject(key, User.class);
         if (user == null){
             response.setStatus(401);
             return false;

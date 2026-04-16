@@ -3,16 +3,18 @@ package com.keepasd.knowledgebase.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 
+@Component
 public class JwtUtil {
 
     private static final Key SECRET_KEY = Keys.hmacShaKeyFor(
             System.getProperty("jwt.secret", "knowledge-base-secret-key-must-be-32bytes!").getBytes()
     );
-    private static final long EXPIRATION = 86400000;
+    public static final long EXPIRATION = 86400000;
 
     public static String generateToken(String username) {
         return Jwts.builder()
@@ -39,6 +41,14 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public long getExpiration(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getExpiration().getTime(); // 返回毫秒时间戳
     }
 }
 

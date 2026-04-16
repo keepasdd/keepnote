@@ -2,10 +2,13 @@ package com.keepasd.knowledgebase.controller;
 
 import com.keepasd.knowledgebase.common.Result;
 import com.keepasd.knowledgebase.dto.request.UpdateUserDTO;
+import com.keepasd.knowledgebase.dto.response.UserVO;
 import com.keepasd.knowledgebase.entity.User;
 import com.keepasd.knowledgebase.service.UserService;
 import com.keepasd.knowledgebase.util.JwtUtil;
+import com.keepasd.knowledgebase.util.RedisUtil;
 import com.keepasd.knowledgebase.util.UserContext;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RedisUtil redisUtil;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/login")
     public Result<Map<String, Object>> login(@RequestBody Map<String, String> params) {
@@ -28,6 +35,8 @@ public class UserController {
         User user = userService.login(params.get("username"), params.get("password"));
         if (user != null) {
             String token = JwtUtil.generateToken(user.getUsername());
+            //把用户信息写入redis,过期时间和token一致 key是token,value是用户信息
+            redisUtil.setObject("user:token:"+token, user, JwtUtil.EXPIRATION, java.util.concurrent.TimeUnit.MILLISECONDS);
             Map<String, Object> data = new HashMap<>();
             data.put("token", token);
             data.put("user", user);
@@ -78,15 +87,24 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public Result<User> getUserInfo() {
-        User user = userService.getUserInfo(UserContext.getUserId());
-        user.setPassword(null);
+    public Result getUserInfo() {
+        UserVO user = userService.getUserInfo(UserContext.getUserId());
         return Result.success(user);
     }
 
     @PutMapping("/update")
     public Result<Void> updateUser(@RequestBody UpdateUserDTO dto) {
         userService.updateUser(UserContext.getUserId(), dto);
+        return Result.success();
+    }
+
+    //用户退出登录
+    @PostMapping("/logout")
+    public Result logout(HttpServletRequest  request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String key = "user:token:"+token;
+        redisUtil.delete(token);
+        userService.logout(request);
         return Result.success();
     }
 }

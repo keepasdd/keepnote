@@ -3,9 +3,8 @@ package com.keepasd.knowledgebase.dto.request;
 import lombok.Data;
 
 @Data
-public class TagAddDTO {
+public class TagUpdateDTO {
+    private Long id;
     private String name;
     private String color;
-    /** 父标签 ID，可选；为 null 则创建根标签 */
-    private Long parentId;
 }

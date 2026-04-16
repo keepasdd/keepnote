@@ -18,6 +18,7 @@ public class FileController {
     @Autowired
     private NoteAttachmentService noteAttachmentService;
 
+    //上传文件
     @PostMapping("/upload")
     public Result<String> upload(@RequestParam("file") MultipartFile file) throws Exception {
         String url = fileService.uploadImage(file);
