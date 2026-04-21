@@ -32,6 +32,7 @@ public class Category {
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @OrderBy("sortOrder ASC")
+    @TableField(exist = false)
     private List<Category> children = new ArrayList<>();
 
     @Column(nullable = false, length = 50)

@@ -49,6 +49,9 @@ public class NoteController {
     public Result<NoteDetailVO> getById(@PathVariable Long id) {
         log.info("查询笔记详情，id={}", id);
         Note note = noteService.getbyId(id);
+        if (note == null) {
+            return Result.fail("Note not found");
+        }
         NoteDetailVO vo = new NoteDetailVO();
         BeanUtils.copyProperties(note, vo);
         vo.setAttachments(noteAttachmentService.listByNoteId(id));

@@ -6,7 +6,7 @@
     <select id="pageQuery" resultType="com.keepasd.knowledgebase.entity.Note">
         SELECT * FROM note
         <where>
-            AND user_id = #{userId}
+            user_id = #{userId}
             <if test="keyword != null and keyword != ''">
                 AND (title LIKE CONCAT('%', #{keyword}, '%')
                 OR content LIKE CONCAT('%', #{keyword}, '%'))
