@@ -35,3 +35,5 @@ build/
 # 前端
 keepnote-vue/node_modules/
 keepnote-vue/dist/
+
+src/main/resources/application.yml

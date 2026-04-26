@@ -27,7 +27,7 @@ jwt:
 
 tencent:
   cos:
-    secret-id: AKIDHSp0xhEXdWwFVbFya0DJC8xa5SfiZEgy
-    secret-key: KR6pNiroa8UdaKsFQM6dyTwBRYTFIPRI
+    secret-id: AKID5GEzHOJ0UmsmgV9dw65572nOo491iDbo
+    secret-key: 3tb6OTL0UlRvDJE11ucFjDqHVYRP9i6H
     region: ap-chengdu
     bucket: keep-noteuserinfo-1409092538
