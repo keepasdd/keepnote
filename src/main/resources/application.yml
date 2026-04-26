@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: local
   data:
     redis:
       database: 0
@@ -24,10 +26,3 @@ server:
 
 jwt:
   secret: knowledge-base-secret-key-must-be-at-least-32-bytes
-
-tencent:
-  cos:
-    secret-id: AKID5GEzHOJ0UmsmgV9dw65572nOo491iDbo
-    secret-key: 3tb6OTL0UlRvDJE11ucFjDqHVYRP9i6H
-    region: ap-chengdu
-    bucket: keep-noteuserinfo-1409092538
