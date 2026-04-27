@@ -36,8 +36,32 @@
         </where>
         ORDER BY create_time DESC
     </select>
-    <select id="getById" resultType="com.keepasd.knowledgebase.entity.Note">
-        select * from note where id = #{id};
+    <resultMap id="NoteWithTagsMap" type="com.keepasd.knowledgebase.entity.Note">
+        <id property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="categoryId" column="category_id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="isFavorite" column="is_favorite" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <collection property="tags" ofType="com.keepasd.knowledgebase.entity.Tag">
+            <id property="id" column="tag_id" />
+            <result property="name" column="tag_name" />
+            <result property="color" column="tag_color" />
+        </collection>
+    </resultMap>
+
+    <select id="getById" resultMap="NoteWithTagsMap">
+        SELECT
+            n.*,
+            t.id    AS tag_id,
+            t.name  AS tag_name,
+            t.color AS tag_color
+        FROM note n
+                 LEFT JOIN note_tag nt ON n.id = nt.note_id
+                 LEFT JOIN tag t ON nt.tag_id = t.id
+        WHERE n.id = #{id}
     </select>
 
     <insert id="insertNoteTags">

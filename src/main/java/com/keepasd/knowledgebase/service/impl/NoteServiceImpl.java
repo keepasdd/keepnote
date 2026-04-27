@@ -94,8 +94,8 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
         noteMapper.updateById(note);
         // 先删除旧标签关联，再插入新的
         noteMapper.deleteNoteTags(updateNoteDTO.getId());
-        if (!CollectionUtils.isEmpty(updateNoteDTO.getTagsIds())) {
-            noteMapper.insertNoteTags(updateNoteDTO.getId(), updateNoteDTO.getTagsIds());
+        if (!CollectionUtils.isEmpty(updateNoteDTO.getTagIds())) {
+            noteMapper.insertNoteTags(updateNoteDTO.getId(), updateNoteDTO.getTagIds());
         }
         redisUtil.deleteByPattern(RedisConstant.NOTE_LIST_KEY + UserContext.getUserId() + ":*");
     }
