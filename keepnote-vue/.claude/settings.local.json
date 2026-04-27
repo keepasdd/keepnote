@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(copy:*)",
+      "Bash(cp \"D:\\\\edge浏览器\\\\pexels-lukas-hartmann-304281-880675.jpg\" \"src/assets/login-bg.jpg\")",
+      "Bash(cp \"/mnt/d/edge浏览器/pexels-lukas-hartmann-304281-880675.jpg\" \"src/assets/login-bg.jpg\")",
+      "Bash(echo \"done: $?\")",
+      "Bash(ls src/assets/login-bg*)",
+      "Read(//mnt/**)",
+      "Read(//mnt/c/**)",
+      "Read(//c/Users/a/**)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\a\\\\Desktop\\\\My_Project\\\\keepnote-vue\\\\*.vue\")"
+    ]
+  }
+}
