@@ -15,5 +15,6 @@ public class NoteDetailVO {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private Integer isFavorite;
+    private Integer isPinned;
     private List<NoteAttachment> attachments;
 }

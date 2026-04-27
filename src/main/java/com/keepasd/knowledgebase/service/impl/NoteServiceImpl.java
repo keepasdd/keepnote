@@ -34,7 +34,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
 
     @Override
     @Transactional
-    public void addNote(NoteCreateDTO noteCreateDTO) {
+    public Long addNote(NoteCreateDTO noteCreateDTO) {
         Note note = new Note();
         BeanUtils.copyProperties(noteCreateDTO, note);
         note.setUserId(UserContext.getUserId());
@@ -46,6 +46,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
             noteMapper.insertNoteTags(note.getId(), noteCreateDTO.getTagIds());
         }
         redisUtil.deleteByPattern(RedisConstant.NOTE_LIST_KEY + UserContext.getUserId() + ":*");
+        return note.getId();
     }
 
     @Override
@@ -97,6 +98,20 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
         if (!CollectionUtils.isEmpty(updateNoteDTO.getTagIds())) {
             noteMapper.insertNoteTags(updateNoteDTO.getId(), updateNoteDTO.getTagIds());
         }
+        redisUtil.deleteByPattern(RedisConstant.NOTE_LIST_KEY + UserContext.getUserId() + ":*");
+    }
+
+    @Override
+    @Transactional
+    public void pinNote(Long id) {
+        Note note = noteMapper.getById(id);
+        if (note == null) {
+            return;
+        }
+        Note update = new Note();
+        update.setId(id);
+        update.setIsPinned(note.getIsPinned() == null || note.getIsPinned() == 0 ? 1 : 0);
+        noteMapper.updateById(update);
         redisUtil.deleteByPattern(RedisConstant.NOTE_LIST_KEY + UserContext.getUserId() + ":*");
     }
 }

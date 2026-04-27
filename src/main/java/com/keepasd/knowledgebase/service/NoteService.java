@@ -8,8 +8,9 @@ import com.keepasd.knowledgebase.dto.request.UpdateNoteDTO;
 import com.keepasd.knowledgebase.entity.Note;
 
 public interface NoteService extends IService<Note> {
-    void addNote(NoteCreateDTO noteCreateDTO);
+    Long addNote(NoteCreateDTO noteCreateDTO);
     PageResult pageQuery(NoteQueryDTO noteQueryDTO);
     Note getbyId(Long id);
     void updateNote(UpdateNoteDTO updateNoteDTO);
+    void pinNote(Long id);
 }

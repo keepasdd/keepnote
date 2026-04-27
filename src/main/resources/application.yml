@@ -1,6 +1,10 @@
 spring:
   profiles:
     active: local
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   data:
     redis:
       database: 0
@@ -26,3 +30,9 @@ server:
 
 jwt:
   secret: knowledge-base-secret-key-must-be-at-least-32-bytes
+
+ # application.yml (这是要提交到 GitHub 的)
+tencent:
+  cos:
+    secret-id: ${TENCENT_COS_SECRET_ID:mysecreteid}
+    secret-key: ${TENCENT_COS_SECRET_KEY:mysecretekey}

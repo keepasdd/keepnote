@@ -3,6 +3,7 @@ package com.keepasd.knowledgebase.controller;
 import com.keepasd.knowledgebase.common.Result;
 import com.keepasd.knowledgebase.dto.request.NoteCreateDTO;
 import com.keepasd.knowledgebase.dto.request.NoteQueryDTO;
+import com.keepasd.knowledgebase.dto.request.PinNoteDTO;
 import com.keepasd.knowledgebase.dto.request.UpdateNoteDTO;
 import com.keepasd.knowledgebase.dto.response.NoteDetailVO;
 import com.keepasd.knowledgebase.entity.Note;
@@ -35,8 +36,8 @@ public class NoteController {
     @PostMapping("/add")
     public Result add(@RequestBody NoteCreateDTO noteCreateDTO) {
         log.info("新增笔记，userId={}, dto={}", UserContext.getUserId(), noteCreateDTO);
-        noteService.addNote(noteCreateDTO);
-        return Result.success();
+        Long id = noteService.addNote(noteCreateDTO);
+        return Result.success(id);
     }
 
     @GetMapping("/list")
@@ -76,5 +77,12 @@ public class NoteController {
         boolean b = noteService.removeById(id);
         log.info("删除笔记{}，id={}", b ? "成功" : "失败", id);
         return b ? Result.success() : Result.fail("删除失败！");
+    }
+
+    @PutMapping("/pin")
+    public Result pin(@RequestBody PinNoteDTO pinNoteDTO) {
+        log.info("置顶/取消置顶笔记，id={}", pinNoteDTO.getId());
+        noteService.pinNote(pinNoteDTO.getId());
+        return Result.success();
     }
 }

@@ -25,4 +25,5 @@ public class Note {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private Integer isFavorite;
+    private Integer isPinned;
 }

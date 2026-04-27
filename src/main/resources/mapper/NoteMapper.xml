@@ -34,7 +34,7 @@
                 </choose>
             </if>
         </where>
-        ORDER BY create_time DESC
+        ORDER BY is_pinned DESC, create_time DESC
     </select>
     <resultMap id="NoteWithTagsMap" type="com.keepasd.knowledgebase.entity.Note">
         <id property="id" column="id" />
@@ -43,6 +43,7 @@
         <result property="title" column="title" />
         <result property="content" column="content" />
         <result property="isFavorite" column="is_favorite" />
+        <result property="isPinned" column="is_pinned" />
         <result property="createTime" column="create_time" />
         <result property="updateTime" column="update_time" />
         <collection property="tags" ofType="com.keepasd.knowledgebase.entity.Tag">
