@@ -1,5 +1,6 @@
 package com.keepasd.knowledgebase.service.impl;
 
+import cn.hutool.db.nosql.redis.RedisDS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -41,6 +42,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
         note.setCreateTime(LocalDateTime.now());
         note.setUpdateTime(LocalDateTime.now());
         noteMapper.insert(note);
+        redisUtil.set(RedisConstant.NOTE_LIST_KEY + note.getId(), note.getContent(), RedisConstant.NOTE_LIST_TTL, TimeUnit.SECONDS);
         // 插入标签关联
         if (!CollectionUtils.isEmpty(noteCreateDTO.getTagIds())) {
             noteMapper.insertNoteTags(note.getId(), noteCreateDTO.getTagIds());
@@ -79,9 +81,17 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
 
     @Override
     public Note getbyId(Long id) {
-        return noteMapper.getById(id);
+        //先在redis里面去寻找
+        Note object = redisUtil.getObject(RedisConstant.NOTE_LIST_KEY + id, Note.class);
+        if (object != null) {
+            log.info("从缓存获取笔记详情成功，id={}", id);
+            return object;
+        }
+        //如果redis中没找到则在mysql中查找，找到之后存入redis
+            Note byId = noteMapper.getById(id);
+            redisUtil.set(RedisConstant.NOTE_LIST_KEY + id, byId.getContent(), RedisConstant.NOTE_LIST_TTL, TimeUnit.SECONDS);
+        return byId;
     }
-
     @Override
     @Transactional
     public void updateNote(UpdateNoteDTO updateNoteDTO) {
