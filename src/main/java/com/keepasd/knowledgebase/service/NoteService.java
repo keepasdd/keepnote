@@ -12,5 +12,8 @@ public interface NoteService extends IService<Note> {
     PageResult pageQuery(NoteQueryDTO noteQueryDTO);
     Note getbyId(Long id);
     void updateNote(UpdateNoteDTO updateNoteDTO);
+    boolean deleteNote(Long id);
+    boolean restoreNote(Long id);
+    boolean purgeExpiredDeletedNote(Long id);
     void pinNote(Long id);
 }

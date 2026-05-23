@@ -18,17 +18,44 @@ services:
     networks:
       - keepnote-net
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: keepnote-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - keepnote-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.5
+    container_name: keepnote-elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - keepnote-net
+
   app:
     build: .
     container_name: keepnote-app
     depends_on:
       - mysql
       - redis
+      - rabbitmq
+      - elasticsearch
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/knowledge_base?useUnicode=true&characterEncoding=utf8
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 123456
       SPRING_DATA_REDIS_HOST: redis
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
     networks:
       - keepnote-net
 
@@ -47,6 +74,7 @@ services:
 
 volumes:
   mysql_data:
+  elasticsearch_data:
 
 networks:
   keepnote-net:

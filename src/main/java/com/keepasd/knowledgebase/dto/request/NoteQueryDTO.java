@@ -20,6 +20,8 @@ public class NoteQueryDTO {
     private Integer isFavorite;
     //数据范围
     private String dateRange;
+    // 是否查询回收站：0=正常笔记，1=回收站笔记
+    private Integer isDeleted;
     //用户ID（内部使用，不由前端传入）
     private Long userId;
 

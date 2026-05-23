@@ -74,9 +74,16 @@ public class NoteController {
             return Result.fail("无此笔记！");
         if (!note.getUserId().equals(UserContext.getUserId()))
             return Result.fail("您无权删除别人的笔记！");
-        boolean b = noteService.removeById(id);
+        boolean b = noteService.deleteNote(id);
         log.info("删除笔记{}，id={}", b ? "成功" : "失败", id);
         return b ? Result.success() : Result.fail("删除失败！");
+    }
+
+    @PutMapping("/{id}/restore")
+    public Result restoreNote(@PathVariable Long id) {
+        log.info("恢复回收站笔记请求，id={}, userId={}", id, UserContext.getUserId());
+        boolean restored = noteService.restoreNote(id);
+        return restored ? Result.success() : Result.fail("恢复失败！");
     }
 
     @PutMapping("/pin")

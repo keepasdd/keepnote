@@ -24,6 +24,8 @@ public class Note {
     private String content;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private LocalDateTime deletedTime;
     private Integer isFavorite;
     private Integer isPinned;
+    private Integer isDeleted;
 }

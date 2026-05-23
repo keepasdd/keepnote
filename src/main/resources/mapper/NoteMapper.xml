@@ -7,6 +7,7 @@
         SELECT * FROM note
         <where>
             user_id = #{userId}
+            AND is_deleted = #{isDeleted}
             <if test="keyword != null and keyword != ''">
                 AND (title LIKE CONCAT('%', #{keyword}, '%')
                 OR content LIKE CONCAT('%', #{keyword}, '%'))
@@ -44,8 +45,10 @@
         <result property="content" column="content" />
         <result property="isFavorite" column="is_favorite" />
         <result property="isPinned" column="is_pinned" />
+        <result property="isDeleted" column="is_deleted" />
         <result property="createTime" column="create_time" />
         <result property="updateTime" column="update_time" />
+        <result property="deletedTime" column="deleted_time" />
         <collection property="tags" ofType="com.keepasd.knowledgebase.entity.Tag">
             <id property="id" column="tag_id" />
             <result property="name" column="tag_name" />

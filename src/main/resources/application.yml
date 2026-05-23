@@ -14,6 +14,8 @@ spring:
     listener:
       simple:
         prefetch: 1 #能者多劳
+  elasticsearch:
+    uris: http://localhost:9200
   data:
     redis:
       database: 0
